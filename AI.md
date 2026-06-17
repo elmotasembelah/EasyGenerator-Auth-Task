@@ -313,4 +313,35 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 ---
 
+### 12. Swagger Docs for Auth Endpoints
+
+**Prompt:**
+> "we need to add swagger docs to each endpoint so i can test it in swagger docs"
+
+**What AI did:** Added `@ApiTags`, `@ApiOperation`, `@ApiResponse`, and `@ApiBody` directly on the controller and `@ApiProperty` on the DTOs.
+
+**Prompt:**
+> "things look too ugly right now in the controller. let's create a docs folder and create custom decorators that aggregate each endpoint doc decorators. each endpoint should have it's own .docs.ts file"
+
+**What AI did:**
+- Created `auth/docs/register.docs.ts` exporting `RegisterDocs()` — a composed decorator using `applyDecorators`
+- Created `auth/docs/login.docs.ts` exporting `LoginDocs()`
+- Cleaned up `auth.controller.ts` to use a single `@RegisterDocs()` / `@LoginDocs()` decorator per endpoint
+
+**My decision:** Use typed response decorators (`ApiCreatedResponse`, `ApiOkResponse`, `ApiBadRequestResponse`, etc.) instead of generic `@ApiResponse({ status: ... })`.
+
+**My decision:** Add `@ApiBody` with the DTO type so Swagger renders the full request body schema with examples.
+
+**Prompt:**
+> "now let's add the types for the other responses"
+
+**What AI did:** Created `register-response.dto.ts` and `login-response.dto.ts` — each with a nested user DTO and `accessToken` field — and wired them into the docs files via `type:` on the success response decorators.
+
+**My corrections:**
+- AI initially named the file `auth-response.dto.ts` — I directed renaming it to `register-response.dto.ts`
+- AI created two separate types but initially left `id` out of `LoginResponseDto` — I caught it and added it back
+- I decided these response DTOs are for Swagger documentation only and should not be used to type the controller return values — no unnecessary coupling to the service layer
+
+---
+
 _This file will be updated incrementally as each module is completed._
