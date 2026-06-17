@@ -106,6 +106,21 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 **My correction:** AI initially set `logsDir` one level up (`../logs`). I decided logs belong inside `backend/`, so AI updated the path to `process.cwd()/logs`.
 
+**Prompt:**
+> "now the setup works but let's refactor it. we have the setup inline in the logger.module.ts. let's create a pino.config.ts file that will have all the setup and config and then import it in the logger.module.ts"
+
+**What AI did:** Extracted all config into `pino.config.ts`, leaving `logger.module.ts` as pure wiring.
+
+**Prompt:**
+> "let's define the transport on its own, create a simple function that takes isDev and returns the correct setup for the transport"
+
+**What AI did:** Extracted `buildTransport(isDev)` as a standalone function inside `pino.config.ts`, separating transport logic from the main config factory.
+
+**Prompt:**
+> "add export PinoLoggerModule so it's explicit what the contract for the logger module is"
+
+**What AI did:** Added `exports: [PinoLoggerModule]` to `LoggerModule` to make the public API explicit.
+
 ---
 
 *This file will be updated incrementally as each module is completed.*
