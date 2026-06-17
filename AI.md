@@ -86,4 +86,26 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ---
 
+### 5. Logger Setup (Pino)
+
+**Prompt:**
+> "okey so now let's start working on the logger. we will use pino logger. we will setup file based logging at the root logs folder with combined and error log files. we will be using pino for it's structured logs. it will be in the common folder since it is shared and infra not a feature"
+
+**What AI did:**
+- Created `src/common/logger/` with `logger.module.ts` and `pino.config.ts`
+- Configured `nestjs-pino` with multi-target transport: `pino-pretty` in dev, `pino/file` to `logs/combined.log` and `logs/error.log` always
+- Wired `LoggerModule` into `AppModule` and set Pino as the app logger in `main.ts` with `bufferLogs: true`
+
+**Prompt:**
+> "no need for pino http. we will just use nestjs-pino, pino, and pino-pretty for dev logs"
+
+**My correction:** AI initially suggested `pino-http` as a separate install. I scoped it down — `nestjs-pino` already handles the HTTP layer internally.
+
+**Prompt:**
+> "i am moving the logs folder inside of the backend folder, it's not in the root of the monorepo"
+
+**My correction:** AI initially set `logsDir` one level up (`../logs`). I decided logs belong inside `backend/`, so AI updated the path to `process.cwd()/logs`.
+
+---
+
 *This file will be updated incrementally as each module is completed.*
