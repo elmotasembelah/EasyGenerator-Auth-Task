@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { ACCESS_TOKEN_COOKIE } from '../../../common/security/cookie.config';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -13,23 +14,22 @@ export class JwtGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
-    const token = this.extractTokenFromHeader(request);
+    const token = (request.cookies as Record<string, string>)?.[
+      ACCESS_TOKEN_COOKIE
+    ];
 
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
 
     try {
-      const payload = this.jwtService.verify<{ sub: string; email: string }>(token);
+      const payload = this.jwtService.verify<{ sub: string; email: string }>(
+        token,
+      );
       request['user'] = payload;
       return true;
     } catch {
       throw new UnauthorizedException('Invalid token');
     }
-  }
-
-  private extractTokenFromHeader(request: Request): string | null {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : null;
   }
 }

@@ -353,4 +353,20 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 ---
 
+---
+
+### 14. Cookie-Based JWT
+
+**Prompt:**
+> "let's setup cookie based jwt implementation. right now we are adding it in the body but we want to add it to the response obj. the cookie setup will be httponly true, secure (according to env, if prod true if dev false), samesite: lax, maxage: 1 day. we will keep the access token for dev env but in prod env we will not return it"
+
+**What AI did:**
+- Installed `cookie-parser` and `@types/cookie-parser`, wired it into `main.ts` via `app.use(cookieParser.default())`
+- Created `src/common/security/cookie.config.ts` with `cookieConfig(isProd: boolean): CookieOptions` returning `httpOnly: true`, `secure: isProd`, `sameSite: 'lax'`, `maxAge: 24 * 60 * 60 * 1000`, and exported `ACCESS_TOKEN_COOKIE = 'access_token'` as the cookie name constant
+- Updated `AuthController` to inject `ConfigService`, resolve `isProd` once in the constructor, and use `@Res({ passthrough: true })` on both endpoints to set the cookie without taking over the response
+- In dev: returns `{ accessToken, user }` — token is in both cookie and body for easier testing
+- In prod: returns `{ user }` only — token is in the cookie only
+
+**My decision:** Removed the `Authorization` header fallback from `JwtGuard` — since our only consumers are browsers, cookies are sufficient. The guard now reads exclusively from the `access_token` cookie. Non-browser clients (mobile, CLI) are out of scope.
+
 _This file will be updated incrementally as each module is completed._
