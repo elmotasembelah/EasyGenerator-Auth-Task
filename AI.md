@@ -66,7 +66,36 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ---
 
-### 3. Git Workflow Setup
+### 3. ConfigModule Setup
+
+**Prompt (paraphrased):**
+> "Let's setup the config module, we will be using NestJS config module."
+
+**Thinking flow:**
+- Install `@nestjs/config`, register `ConfigModule.forRoot({ isGlobal: true })` in `AppModule` — makes `ConfigService` injectable everywhere without re-importing per module
+- Deferred defining actual env vars to each module's step (user's explicit instruction: "we will add the vars as we build their module")
+
+**Prompt (paraphrased):**
+> "Let's test it and log the env in the response of the getHello endpoint."
+
+**Thinking flow:**
+- Injected `ConfigService` into `AppService`, read `NODE_ENV`, returned it in the hello response as a quick smoke test
+
+**Problem encountered:**
+> "It is coming back as undefined. The command to start the app doesn't set it explicitly. We will need cross-env to set it up."
+
+**Thinking flow:**
+- `NODE_ENV` was undefined because the NestJS start scripts don't set it — `@nestjs/config` loads `.env` values but `NODE_ENV` is typically set by the shell/process, not the `.env` file
+- Solution: `cross-env` to set `NODE_ENV` inline in npm scripts, works cross-platform (Windows + Unix)
+- Updated all four start scripts (`start`, `start:dev`, `start:debug`, `start:prod`) with appropriate `NODE_ENV` values
+
+**What I directed vs. what AI did:**
+- AI suggested defining all env vars upfront — I corrected this to add vars per module as we build
+- AI wrote the `cross-env` fix after I identified the root cause
+
+---
+
+### 4. Git Workflow Setup
 
 **Prompt (paraphrased):**
 > "Let's do the initial commit. We will be following the conventional commits pattern. For this project we will use 2 branches — main and dev. Because this is a simpler task we will not be going full git flow with feature branches."
