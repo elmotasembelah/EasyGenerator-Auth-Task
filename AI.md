@@ -147,4 +147,25 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ---
 
+### 6. Database Module (MongoDB + Mongoose)
+
+**Prompt:**
+> "okey so let's start working on the next step which is the db. we will be using mongodb and our orm will be mongoose. i have added .env and the .env.example files and updated them with the needed keys for this module. as the logger module, this will be in the common since it's infra. and it will have database.config.ts and database.module.ts files with our established separation of concern pattern"
+
+**What AI did:**
+- Created `src/common/database/` with `database.config.ts` holding the `MongooseModuleOptions` factory and `database.module.ts` as pure wiring with `exports: [MongooseModule]`
+- Wired `DatabaseModule` into `AppModule`
+
+**Prompt:**
+> "okey so connection setup and working, but what is the best way to log connection successful?"
+
+**What AI did:** Added `OnModuleInit` to `DatabaseModule` using `@InjectConnection()` to access the Mongoose `Connection` and log the connected host via `new Logger(DatabaseModule.name)` — which routes through Pino since it's set as the app logger.
+
+**Prompt:**
+> "add fail state"
+
+**What AI did:** Added an `else` branch logging `this.logger.error()` with the `readyState` value when the connection is not in the connected state.
+
+---
+
 _This file will be updated incrementally as each module is completed._
