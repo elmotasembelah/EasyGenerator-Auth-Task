@@ -168,4 +168,28 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ---
 
+### 7. Swagger Setup
+
+**Prompt:**
+> "okey so we already have the health check so we can skip that. let's start with swagger setup so once we start adding endpoints we can test them"
+
+**Prompt:**
+> "we will start that simple and then we will refactor. EasyGenerator Auth Task API / API documentation for EasyGenerator's auth Task endpoints / these are the title and the desc / version is 1.0"
+
+**What AI did:** Added the Swagger setup inline in `main.ts` with the provided title, description, and version, exposed at `/docs`. I installed `@nestjs/swagger`.
+
+**Prompt:**
+> "okey so things are working, but instead of having the setup in the main.ts let's create in the common folder swagger folder with swagger.config.ts and swagger.setup.ts. swagger.setup.ts will expose a function that will take the app and setup the swagger"
+
+**What AI did:** Extracted setup into `src/common/swagger/` — `swagger.config.ts` holds the `DocumentBuilder` config, `swagger.setup.ts` exposes `setupSwagger(app)` which is called from `main.ts`.
+
+**Prompt:**
+> "okey so now instead of having the string values inline let's put them in global vars"
+
+**What AI did:** Extracted the title, description, and version into named constants in `swagger.config.ts`, and moved `SWAGGER_PATH` to `swagger.setup.ts` since it's a setup concern not a document concern.
+
+**My decision:** Kept constants in their respective files rather than creating a `swagger.constants.ts` — the values are only used in one place each so a dedicated constants file would just add an extra hop with no benefit.
+
+---
+
 _This file will be updated incrementally as each module is completed._
