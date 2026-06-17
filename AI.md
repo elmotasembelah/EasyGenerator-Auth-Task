@@ -257,4 +257,19 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ---
 
+### 9. Make LoggerModule Global
+
+**Prompt:**
+> "okey so before we continue. let's make the logger global like the config"
+
+**My decision:** I wanted to follow the same pattern as `ConfigModule` — make the logger available everywhere without re-importing it in each feature module. My initial thought was to set it as global in `AppModule` rather than inside `LoggerModule` itself, to stay consistent with how `ConfigModule.forRoot({ isGlobal: true })` works.
+
+AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `ConfigModule`, not a pattern we can replicate — to make our own module global, the `@Global()` decorator must be placed on the module class itself. After that clarification, I agreed to go with `@Global()` on `LoggerModule`.
+
+**What AI did:**
+- Added `@Global()` decorator to `LoggerModule`
+- Removed the now-redundant `LoggerModule` import from `UsersModule` and `AuthModule`
+
+---
+
 _This file will be updated incrementally as each module is completed._
