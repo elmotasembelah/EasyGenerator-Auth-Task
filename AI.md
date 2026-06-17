@@ -344,4 +344,13 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 ---
 
+### 13. API Prefix and Versioning
+
+**Prompt:**
+> "now let's add api prefix and versioning to main.ts"
+
+**What AI did:** Added `app.setGlobalPrefix('api')` and `app.enableVersioning({ type: VersioningType.URI })` in `main.ts`, and added `version: '1'` to the `@Controller` decorator on `AuthController` and `AppController`. Routes are now `/api/v1/auth/register` and `/api/v1/auth/login`.
+
+---
+
 _This file will be updated incrementally as each module is completed._
