@@ -192,4 +192,69 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ---
 
+### 8. Users Module
+
+**Prompt:**
+> "let's start working on the users module, this is the start of the feature modules. the features modules will have multiple main layers: controllers, services, repos, entity. and the other main nestjs layers like guards, pipe. from the task docs the user will have: name (min 3 chars), email (valid email format), password (min 8 chars, atleast 1 letter, atleast 1 number, atleast 1 special char). all required. we will follow security best practices like storing password hash not the actual password"
+
+**My decision:** Custom repository pattern — `UserRepository` wraps the Mongoose model, keeping Mongoose out of the service layer and making the service independently testable. AI asked for clarification on the repo approach; I confirmed it was always the intent.
+
+**My decision:** Feature modules live under `src/modules/` rather than directly under `src/` — keeps infra (`common/`) and features (`modules/`) clearly separated. I made this call after seeing the flat structure and decided it looked cleaner.
+
+**What AI did:**
+- Created `user.entity.ts` with `@Schema` decorator, `name`, `email`, `password` fields and `timestamps: true`
+- Created `user.repository.ts` with `create` and `findByEmail` methods wrapping the Mongoose model
+- Created `users.service.ts` delegating to the repository
+- Wired everything in `users.module.ts` with `MongooseModule.forFeature`, exporting `UsersService`
+
+**My correction:** AI used `Partial<User>` as the input type for `create`. I directed replacing it with an explicit `CreateUserInput` interface in a `types/` folder — decouples the input contract from the entity type.
+
+**What AI did:** Created `src/modules/users/types/create-user.input.ts` with `name`, `email`, `password` as explicit string fields, and updated the repository and service to use it.
+
+**Prompt:**
+> "let's add select false to the password field for security. and in the repo layer we need to add findbyemail options type and accept option withPassword, and if it is true then we add back the password in the query"
+
+**What AI did:** Added `select: false` to the password field in the entity, created `FindByEmailOptions` interface with `withPassword?: boolean`, and updated `findByEmail` to conditionally add `.select('+password')` to the query.
+
+**My correction:** `FindByEmailOptions` was initially defined inside the repository file. I directed moving it to the `types/` folder for consistency.
+
+**Prompt:**
+> "okey so now there is no hashing done, we need to hash the password before we save it. do that in the service layer since that is business logic"
+
+**What AI did:** Added password hashing in `UsersService.create()` before passing data to the repository. I installed `bcrypt` and `@types/bcrypt`.
+
+**Prompt:**
+> "okey so create a users.constants.ts with an obj. this config file will store the constants of the users module like the salt rounds"
+
+**What AI did:** Created `users.constants.ts` with a `USERS_CONSTANTS` object and moved `SALT_ROUNDS` into it, updated the service to reference `USERS_CONSTANTS.SALT_ROUNDS`.
+
+**Prompt:**
+> "we need to add testing logic to it, add some unit tests: create service / try creating a user / try to create the same user / make sure the repo receives the hashed pass not the original one and that the other fields are not changed / find by email / try fetching the same user we created / and fetching a non existent user"
+
+**What AI did:** Created `users.service.spec.ts` with mocked `UserRepository`, testing: password is hashed before reaching the repo, name and email fields are not mutated, the created document is returned, `findByEmail` returns a user when found, and returns null when not found.
+
+**My correction:** AI initially used untyped mocks causing ESLint `no-unsafe-assignment` errors. I directed resetting to focus on behavior not typing — AI resolved it using `as unknown as jest.Mocked<UserRepository>`.
+
+**Prompt:**
+> "add it" (adding the `withPassword` option test case)
+
+**What AI did:** Added a test verifying that `{ withPassword: true }` is passed through from the service to the repository — covering the security-sensitive branch.
+
+**Prompt:**
+> "let's add error handling in the create service to handle when the entered email is already used. right now there is no handling of that. try catch the call to the repo and handle the error"
+
+**What AI did:** Wrapped the `userRepository.create` call in a try/catch, checking for MongoDB duplicate key error code `11000` and throwing `ConflictException('Email already in use')`, re-throwing all other errors. Added a matching test case for this scenario.
+
+**Prompt:**
+> "now let's add logging to the create in both cases. the success case will log info with `{ event: 'user:created', email: data.email }, 'User created'` and the fail will be warn `{ event: 'user:create:duplicate', email: data.email }, 'Duplicate email'`"
+
+**What AI did:** Injected `Logger` from `nestjs-pino` into `UsersService`, added structured `log()` on success and `warn()` on duplicate. Imported `LoggerModule` into `UsersModule` to provide the `Logger` token. Updated the spec to provide a `mockLogger` so tests don't break.
+
+**Pre-commit review:** I asked AI to review the module before committing. AI identified several improvement points, I agreed to two:
+
+1. **Add `trim: true` to `name` and `email` fields** — without it, leading/trailing whitespace would be stored and `" John"` and `"John"` would be treated as different values.
+2. **Move MongoDB duplicate key error code `11000` to `USERS_CONSTANTS`** as `MONGO_DUPLICATE_KEY_CODE` — eliminates the magic number sitting inline in the service catch block.
+
+---
+
 _This file will be updated incrementally as each module is completed._
