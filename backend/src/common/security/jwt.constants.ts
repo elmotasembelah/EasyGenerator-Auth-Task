@@ -1,0 +1,4 @@
+export const JWT_CONSTANTS = {
+  SECRET_KEY: 'JWT_SECRET',
+  EXPIRES_IN_KEY: 'JWT_EXPIRES_IN',
+};

@@ -294,4 +294,23 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 ---
 
+### 11. Extract JWT to Common Security Module
+
+**Prompt:**
+> "let's extract the jwt to it's own folder in common under security. config file and module file. then we will inject it in the auth"
+
+**What AI did:**
+- Created `src/common/security/jwt.config.ts` with a `jwtConfig(config: ConfigService): JwtModuleOptions` factory reading `JWT_SECRET` and `JWT_EXPIRES_IN`
+- Created `src/common/security/jwt.module.ts` as a `@Global()` module that registers `JwtModule.registerAsync` using the config factory and exports it
+- Added `JwtModule` to `AppModule` imports alongside `LoggerModule` and `DatabaseModule`
+- Stripped `JwtModule.registerAsync` wiring and the now-redundant `ConfigModule`/`ConfigService` imports out of `auth.module.ts` — it now only imports `UsersModule`
+
+**My decision:** Add constants for the JWT env key names — same pattern as `users.constants.ts`.
+
+**What AI did:** Created `src/common/security/jwt.constants.ts` with `JWT_CONSTANTS = { SECRET_KEY, EXPIRES_IN_KEY }` and updated `jwt.config.ts` to reference them — no magic strings inline.
+
+**My decision:** Removed `@Global()` from `JwtModule`. AI initially made it global and then tried to remove it from `AppModule`, then tried to remove it from `AuthModule` — both wrong. I caught both mistakes. The correct setup: `JwtModule` stays in `AppModule` as shared infrastructure AND is explicitly imported in `AuthModule` since it directly uses `JwtService`.
+
+---
+
 _This file will be updated incrementally as each module is completed._
