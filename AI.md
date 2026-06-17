@@ -272,4 +272,26 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 ---
 
+### 10. Auth Module
+
+**Prompt:**
+> "okey so now let's start working on the auth module. we will have 2 flows, login and register. there will be no entity or repo, just controllers and services. we will have the dto folder. i will add the vars to the .env and the .env.example"
+
+**My decisions:**
+- Access token only — no refresh token
+- Manual JWT setup (no Passport)
+- I installed `@nestjs/jwt` and ran the nest generate commands myself
+
+**What AI did:**
+- Created `register.dto.ts` with `@IsString() @MinLength(3)` on `name`, `@IsEmail()` on `email`, and `@IsString() @MinLength(8) @Matches(...)` on `password` enforcing at least one letter, number, and special character
+- Created `login.dto.ts` with `@IsEmail()` on `email` and `@IsString()` on `password`
+- Created `auth.service.ts` with `register` and `login` methods — both sign a JWT with `{ sub: user.id, email }` and return `{ accessToken, user: { id, name, email } }`
+- `login` fetches the user with `{ withPassword: true }`, runs `bcrypt.compare`, throws `UnauthorizedException('Invalid credentials')` on either missing user or wrong password — same message for both to avoid user enumeration
+- Both methods log structured events: `auth:register` and `auth:login`
+- Created `jwt.guard.ts` — extracts Bearer token from `Authorization` header, calls `jwtService.verify<{ sub, email }>()`, sets `request['user'] = payload`, throws `UnauthorizedException` on missing or invalid token
+- Created `auth.module.ts` importing `UsersModule` and `JwtModule.registerAsync` reading `JWT_SECRET` and `JWT_EXPIRES_IN` from config, exporting `JwtGuard` and `JwtModule`
+- Created `auth.controller.ts` with `POST /auth/register` and `POST /auth/login` (`@HttpCode(200)`)
+
+---
+
 _This file will be updated incrementally as each module is completed._
