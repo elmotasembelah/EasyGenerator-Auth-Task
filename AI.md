@@ -14,8 +14,8 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ### 1. Initial Planning & Task Breakdown
 
-**Prompt (paraphrased):**
-> "We will be building an auth flow (frontend/backend). Here is the task description. Read it, understand what we're building. It's an evaluation task for an interview process. We will build it step by step."
+**Prompt:**
+> "this is a new project/task. we will be building an auth flow (frontend / backend). the backend will be with nestjs, frontend will be with react. here is the received docs of the task [...] read it and understand what we will be building, as you can see it's an evaluation task for an interview process. we will be building it step by step, feel free to tell me if am doing something wrong or if u want to suggest diff approaches than what i am doing, i will review ur suggestions and decide what to do"
 
 **What AI did:**
 - Analyzed the task requirements and identified all deliverables (signup, signin, protected route, README, AI.md)
@@ -31,81 +31,58 @@ AI was used as a force multiplier — handling scaffolding, boilerplate, and str
 
 ### 2. Build Order & Step Design
 
-**Prompt (paraphrased):**
-> "Here is the order of subtasks I designed — we will follow this. Don't jump to final conclusions of each module/step."
+**Prompt:**
+> "Init NestJS app / .env + ConfigModule / Logger setup ← moved up here / Database connection + verify it connects / Health check / Swagger setup / Users module — schema + service only / Auth module — register, sign-in, JWT strategy, guard / Users controller — GET /me / CORS config / Frontend / Tests / GitHub Actions CI
+>
+> here is the order of subtasks that i designed, we will be following this, don't jump to final conclusions of each module/step"
 
-**Defined build order:**
-1. Init NestJS app
-2. `.env` + ConfigModule
-3. Logger setup
-4. Database connection + verify it connects
-5. Health check
-6. Swagger setup
-7. Users module — schema + service only
-8. Auth module — register, sign-in, JWT strategy, guard
-9. Users controller — `GET /me`
-10. CORS config
-11. Frontend
-12. Tests
-13. GitHub Actions CI
-14. README
-15. AI.md (incremental)
-
-**What AI did:** Accepted the order without reordering or collapsing steps, and committed to not jumping ahead between modules.
+**What AI did:**
+- Accepted the order without reordering or collapsing steps
+- Committed to not jumping ahead between modules
 
 ---
 
-## What Was AI-Generated vs. What I Directed
+### 3. Git Workflow
 
-| Area | AI role | My role |
-|------|---------|---------|
-| Task analysis & planning | Identified deliverables and bonus targets | Confirmed scope, set priorities |
-| Build order | Accepted and followed my defined sequence | Designed the step-by-step order |
-| Code scaffolding | Generated boilerplate per step | Ran commands, reviewed output |
-| Architecture decisions | Suggested options with trade-offs | Made all final decisions |
+**Prompt:**
+> "let's do the initial commit, and afterwards we will be following the conventional commits pattern for commit messages. for this project we will be using 2 branches, main and dev. add a note in the md file that because this is a simpler task we will not be going full git flow with feat branches"
+
+**What AI did:**
+- Removed the nested `.git` folder that `nest new` created inside `backend/` (would have prevented the root repo from tracking those files)
+- Set up conventional commits format for all messages (`feat:`, `fix:`, `chore:`, `docs:`, etc.)
+
+**My decision:**
+- No feature branches — two-branch model (main + dev) is sufficient for a scoped assessment
 
 ---
 
-### 3. ConfigModule Setup
+### 4. ConfigModule Setup
 
-**Prompt (paraphrased):**
-> "Let's setup the config module, we will be using NestJS config module."
+**Prompt:**
+> "okey so for now let's setup the config module, we will be using nestjs config module"
 
 **Thinking flow:**
 - Install `@nestjs/config`, register `ConfigModule.forRoot({ isGlobal: true })` in `AppModule` — makes `ConfigService` injectable everywhere without re-importing per module
-- Deferred defining actual env vars to each module's step (user's explicit instruction: "we will add the vars as we build their module")
 
-**Prompt (paraphrased):**
-> "Let's test it and log the env in the response of the getHello endpoint."
+**Prompt:**
+> "we will add the vars as we build their module. so for now we will just install the config and make it global in the app module"
+
+**My correction:** AI suggested defining all env vars upfront. I redirected to add vars incrementally per module.
+
+**Prompt:**
+> "let's test it and log the env in the response of the getHello endpoint"
 
 **Thinking flow:**
 - Injected `ConfigService` into `AppService`, read `NODE_ENV`, returned it in the hello response as a quick smoke test
 
 **Problem encountered:**
-> "It is coming back as undefined. The command to start the app doesn't set it explicitly. We will need cross-env to set it up."
+
+**Prompt:**
+> "it is coming back as undefined. the command to start the app doesn't set it explicitly. we will need cross-env to set it up"
 
 **Thinking flow:**
-- `NODE_ENV` was undefined because the NestJS start scripts don't set it — `@nestjs/config` loads `.env` values but `NODE_ENV` is typically set by the shell/process, not the `.env` file
-- Solution: `cross-env` to set `NODE_ENV` inline in npm scripts, works cross-platform (Windows + Unix)
-- Updated all four start scripts (`start`, `start:dev`, `start:debug`, `start:prod`) with appropriate `NODE_ENV` values
-
-**What I directed vs. what AI did:**
-- AI suggested defining all env vars upfront — I corrected this to add vars per module as we build
-- AI wrote the `cross-env` fix after I identified the root cause
-
----
-
-### 4. Git Workflow Setup
-
-**Prompt (paraphrased):**
-> "Let's do the initial commit. We will be following the conventional commits pattern. For this project we will use 2 branches — main and dev. Because this is a simpler task we will not be going full git flow with feature branches."
-
-**What AI did:**
-- Accepted the simplified two-branch model (main + dev)
-- Committed to following [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format for all commit messages (`feat:`, `fix:`, `chore:`, `docs:`, etc.)
-
-**My decision:**
-- No feature branches for this task — overhead isn't worth it for a scoped assessment. Dev branch accumulates work; main receives merges at stable milestones.
+- `NODE_ENV` was undefined because the NestJS start scripts don't set it — `@nestjs/config` loads `.env` file values but `NODE_ENV` is a process-level concern, not a `.env` concern
+- I identified the root cause; AI implemented the fix using `cross-env` in all four npm start scripts, which works cross-platform (Windows + Unix)
 
 ---
 
