@@ -369,4 +369,31 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 **My decision:** Removed the `Authorization` header fallback from `JwtGuard` — since our only consumers are browsers, cookies are sufficient. The guard now reads exclusively from the `access_token` cookie. Non-browser clients (mobile, CLI) are out of scope.
 
+---
+
+### 15. Auth Module Tests
+
+**Prompt:**
+> "now add some tests for the new module"
+
+**What AI did:** Created `auth.service.spec.ts` covering:
+- `register` returns `{ accessToken, user }` and signs JWT with `{ sub, email }`
+- `login` returns token on valid credentials, throws `UnauthorizedException` on missing user, throws on wrong password, passes `{ withPassword: true }` to `UsersService`
+
+**Prompt:**
+> "so why no controller tests?"
+
+**What AI did:** Created `auth.controller.spec.ts` covering the controller's only real logic — the prod/dev conditional:
+- Cookie is set with `httpOnly: true` on both register and login
+- Dev: `accessToken` is present in response body
+- Prod: `accessToken` is absent from response body
+
+**Prompt:**
+> "let's add some for that" (referring to JwtGuard)
+
+**What AI did:** Created `guards/jwt.guard.spec.ts` covering:
+- Valid token → returns `true` and sets `request.user` with the JWT payload
+- Missing cookie → throws `UnauthorizedException('Missing token')`
+- Invalid token → throws `UnauthorizedException('Invalid token')`
+
 _This file will be updated incrementally as each module is completed._
