@@ -529,3 +529,19 @@ After both override approaches failed, I decided to configure the throttler itse
 - Added `app.use(helmet())` in `main.ts` before CORS and all other middleware — ensures security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`, etc.) are applied to every response
 
 _This file will be updated incrementally as each module is completed._
+
+---
+
+## What's Next
+
+These are the improvements and features that would be added in a production continuation of this project.
+
+### Authentication
+- **OAuth 2.0 (Google / GitHub)** — add social login via Passport OAuth strategies so users can register and sign in without a password
+- **Email verification** — send a verification link on register and block login until the email is confirmed
+- **Forgot password / reset** — generate a signed, time-limited reset token and email it to the user
+
+### Security
+- **Brute-force lockout** — track failed login attempts per user in the DB and temporarily lock the account after N failures
+- **Audit log** — persist a record of every login, logout, and password change with IP and user-agent for compliance and incident response
+
