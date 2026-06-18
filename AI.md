@@ -532,7 +532,7 @@ _This file will be updated incrementally as each module is completed._
 
 ---
 
-## What's Next
+## What's Next (Backend)
 
 These are the improvements and features that would be added in a production continuation of this project.
 
@@ -544,4 +544,28 @@ These are the improvements and features that would be added in a production cont
 ### Security
 - **Brute-force lockout** — track failed login attempts per user in the DB and temporarily lock the account after N failures
 - **Audit log** — persist a record of every login, logout, and password change with IP and user-agent for compliance and incident response
+
+---
+
+## Frontend
+
+### 25. Scaffold Vite React TS
+
+**Prompt:**
+> "let's start with the frontend part of this task. we will be using react with vite and react router, protected and public routes, feature based arch, tailwind+shadcn for comps and styling"
+
+**Building steps:**
+1. Scaffold Vite React TS
+2. Install dependencies
+3. Setup `.env` with `VITE_API_URL`
+4. Axios instance + interceptor
+5. Zustand auth store
+6. PrivateRoute + PublicRoute components
+7. Register page
+8. Sign in page
+9. Welcome page
+
+**What AI did:**
+- Scaffolded `frontend/` using `pnpm create vite@latest frontend -- --template react-ts`
+- Stack: React 19, TypeScript, Vite
 
