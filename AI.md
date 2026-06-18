@@ -430,4 +430,22 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Added `name` to the JWT sign payload in `AuthService.register` and `AuthService.login`
 - Updated `express.d.ts` to include `name` in `request.user` and made it non-optional since the guard always sets it before protected routes run
 
+---
+
+### 19. GET /me Endpoint
+
+**Prompt:**
+> "yeah let's start working on it"
+
+**What AI did:**
+- Created `users/dto/me-response.dto.ts` with `id`, `name`, `email` fields for Swagger
+- Created `users/docs/me.docs.ts` with `@ApiCookieAuth`, `@ApiOperation`, `@ApiOkResponse`, `@ApiUnauthorizedResponse`
+- Created `UsersController` with `GET /me` protected by `@UseGuards(JwtGuard)`, returning `{ id: req.user.sub, name: req.user.name, email: req.user.email }` directly from the decoded JWT — no DB call
+- Updated `UsersModule` to import `JwtModule` (which exports `JwtGuard`)
+
+**Tests — `users.controller.spec.ts`:**
+- Returns correct shape from decoded JWT payload
+- Throws when `user` is not set on the request
+- Used `.overrideGuard(JwtGuard)` in the test module to avoid resolving `JwtService` in unit tests
+
 _This file will be updated incrementally as each module is completed._
