@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "../../../lib/api/api.errors";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 import {
@@ -24,8 +25,14 @@ export function useRegisterForm() {
       setUser(user);
       toast.success("Account created successfully!");
       navigate("/profile");
-    } catch {
-      toast.error("Registration failed. Please try again.");
+    } catch (error) {
+      toast.error(
+        getApiErrorMessage(error, {
+          400: "Invalid details. Please check your inputs.",
+          409: "An account with this email already exists.",
+          429: "Too many attempts. Please wait before trying again.",
+        }, "Registration failed. Please try again."),
+      );
     }
   };
 

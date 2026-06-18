@@ -815,3 +815,15 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - When authenticated: shows "Hello, {name}" and a single "Go to Profile" button
 - When not authenticated: shows original "Welcome" heading with Login + Register buttons
 
+---
+
+### 41. Specific API Error Messages
+
+**Prompt:**
+> "the error handling for the login and register is too generic"
+
+**What AI did:**
+- Created `src/lib/api/api.errors.ts` with `getApiErrorMessage(error, messages, fallback)` — reads `error.response.status` from axios errors and maps to a specific message
+- `useRegisterForm`: `400` → invalid details, `409` → email already exists, `429` → rate limited
+- `useLoginForm`: `400` → invalid details, `401` → invalid email or password, `429` → rate limited
+
