@@ -396,4 +396,16 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Missing cookie → throws `UnauthorizedException('Missing token')`
 - Invalid token → throws `UnauthorizedException('Invalid token')`
 
+---
+
+### 16. Type Express Request.user
+
+**Prompt:**
+> "okey so let's add the typing to the request obj for the user since we will start now working on the guarded endpoint"
+
+**What AI did:**
+- Created `src/common/types/express.d.ts` extending the Express `Request` interface via declaration merging to add `user?: { sub: string; email: string }`
+- Updated `JwtGuard` to use `request.user = payload` instead of the untyped `request['user'] = payload`
+- No `tsconfig.json` changes needed — TypeScript picks up `.d.ts` files under `src` automatically
+
 _This file will be updated incrementally as each module is completed._
