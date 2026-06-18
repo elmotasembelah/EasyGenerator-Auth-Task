@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 interface ProfileCardProps {
   user: User;
   onLogout: () => void;
+  isLoggingOut: boolean;
 }
 
-export function ProfileCard({ user, onLogout }: ProfileCardProps) {
+export function ProfileCard({ user, onLogout, isLoggingOut }: ProfileCardProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
@@ -33,8 +34,9 @@ export function ProfileCard({ user, onLogout }: ProfileCardProps) {
           <Button
             className="w-full bg-red-800 hover:bg-red-900 text-white"
             onClick={onLogout}
+            disabled={isLoggingOut}
           >
-            Logout
+            {isLoggingOut ? "Logging out..." : "Logout"}
           </Button>
         </CardContent>
       </Card>

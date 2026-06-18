@@ -4,9 +4,9 @@ import { ProfileCard } from "../components/ProfileCard";
 
 export function Component() {
   const user = useAuthStore((s) => s.user);
-  const handleLogout = useLogout();
+  const { logout, isLoggingOut } = useLogout();
 
   if (!user) return null;
 
-  return <ProfileCard user={user} onLogout={handleLogout} />;
+  return <ProfileCard user={user} onLogout={logout} isLoggingOut={isLoggingOut} />;
 }

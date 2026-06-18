@@ -827,3 +827,15 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - `useRegisterForm`: `400` → invalid details, `409` → email already exists, `429` → rate limited
 - `useLoginForm`: `400` → invalid details, `401` → invalid email or password, `429` → rate limited
 
+---
+
+### 42. useLogout Refactor
+
+**Prompt:**
+> "in the useLogout we are not returning isLoggingOut, make it cleaner and more standard"
+
+**What AI did:**
+- Refactored `useLogout` to return `{ logout, isLoggingOut }` — `isLoggingOut` is a `useState` flag set to `true` during the request and reset in `finally`
+- Updated `ProfileCard` to accept `isLoggingOut` prop — disables button and shows "Logging out..." while in progress
+- Updated `ProfilePage` to destructure `{ logout, isLoggingOut }` from the hook and pass both to `ProfileCard`
+
