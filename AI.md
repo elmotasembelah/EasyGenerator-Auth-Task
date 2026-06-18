@@ -668,3 +668,18 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Replaced `index.css` content with `@import "tailwindcss"` (v4 setup — no config file needed)
 - Created `src/pages/RootPage.tsx` at `/` with links to `/login` and `/register`, styled with Tailwind utilities
 
+---
+
+### 31. shadcn/ui Setup
+
+**Prompt:**
+> "let's setup shadcn and its comps then we will build the login and register pages"
+
+**What AI did:**
+- Ran `pnpm dlx shadcn@4.10.0 init` — selected Radix + Nova preset
+- Added `@/*` path alias to both `tsconfig.json` and `tsconfig.app.json`, and wired it in `vite.config.ts` via `path.resolve`
+- Installed `class-variance-authority`, `clsx`, `tailwind-merge` as peer deps
+- Created `src/lib/utils.ts` with the `cn()` helper
+- Added `button` component via `shadcn add button`
+- Updated `RootPage.tsx` to use `<Button asChild>` wrapping `<Link>` for the nav buttons
+
