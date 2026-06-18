@@ -654,3 +654,17 @@ These are the improvements and features that would be added in a production cont
 **Pattern — lazy loading with React Router v6.4+:**
 React Router's `lazy` prop (data router API) requires the module to export a named `Component` export, not a default export. All page files use `export function Component()` instead of `export default` so code splitting works automatically per route with no extra wiring.
 
+---
+
+### 30. Tailwind CSS Setup + Root Page
+
+**Prompt:**
+> "add a root route that has two links to the register or login pages"
+> "style the page with tailwind"
+
+**What AI did:**
+- Installed `tailwindcss` and `@tailwindcss/vite`
+- Added Tailwind plugin to `vite.config.ts`
+- Replaced `index.css` content with `@import "tailwindcss"` (v4 setup — no config file needed)
+- Created `src/pages/RootPage.tsx` at `/` with links to `/login` and `/register`, styled with Tailwind utilities
+

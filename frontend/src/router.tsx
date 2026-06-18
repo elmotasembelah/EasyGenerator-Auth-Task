@@ -1,4 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import { authRoutes } from "./features/auth/auth.routes";
 
-export const router = createBrowserRouter([...authRoutes]);
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    lazy: () => import("./pages/RootPage"),
+  },
+  ...authRoutes,
+]);
