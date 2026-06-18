@@ -486,4 +486,35 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Added a `ConfigService` mock to the test module providers: `{ provide: ConfigService, useValue: { get: jest.fn().mockReturnValue('test') } }`
 - Updated the assertion from `'Hello World!'` to `'Hello World! NODE_ENV=test'` to match the actual return value
 
+---
+
+### 23. E2E Test Suite
+
+**Prompt:**
+> "now let's work on the app.e2e-spec.ts file"
+> "yup let's use mongodb-memory-server for the e2e tests"
+> "add tests for the throttler, for security (httponly, and same site), add test for protected /me endpoint, and edge cases for the auth flow like missing fields, password too weak"
+
+**What AI did:**
+- Installed `mongodb-memory-server` as a dev dependency
+- Rewrote `test/app.e2e-spec.ts` to spin up a `MongoMemoryServer` instance and set env vars in `beforeAll` — no real DB needed
+- Covered the full auth flow end-to-end:
+  - `POST /api/v1/auth/register` — happy path, 409 on duplicate email, 400 for all validation failures (missing name, short name, weak/short/missing-char passwords)
+  - `POST /api/v1/auth/login` — happy path, 401 for wrong password/unknown email, 400 for missing fields
+  - Cookie security: asserts `HttpOnly` and `SameSite=Lax` attributes on the `set-cookie` header
+  - `GET /api/v1/users/me` — authenticated, unauthenticated, tampered JWT, malformed cookie
+  - Rate limiting: 429 after exceeding register limit (3) and login limit (5)
+
+**Throttler problem and fix:**
+The throttler tests and functional tests shared the same in-process app and the same IP (`127.0.0.1`). The first two register requests consumed the 3-request limit, causing all subsequent validation-testing requests to get 429 instead of 400.
+
+**Attempts that didn't work:**
+1. `overrideModule(ThrottlerModule)` — NestJS didn't replace the already-wired module
+2. `overrideProvider(APP_GUARD)` — `APP_GUARD` is a multi-provider token; replacing one slot left the `ThrottlerGuard` still active
+
+**Fix that worked (user's decision):**
+After both override approaches failed, I decided to configure the throttler itself to skip based on the environment — adding `skipIf: () => process.env.NODE_ENV === 'test'` to `throttlerConfig()`. This keeps the throttler wired up in production while disabling it cleanly in the test environment without any test-module trickery.
+- Functional tests run with `NODE_ENV=test` (throttle skipped)
+- The dedicated rate-limiting `describe` block sets `NODE_ENV=e2e-throttle` before building its app so the real throttler kicks in
+
 _This file will be updated incrementally as each module is completed._
