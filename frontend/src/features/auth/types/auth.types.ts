@@ -9,3 +9,13 @@ export interface MeResponse {
   name: string;
   email: string;
 }
+
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+}

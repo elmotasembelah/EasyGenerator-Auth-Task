@@ -680,6 +680,25 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Added `@/*` path alias to both `tsconfig.json` and `tsconfig.app.json`, and wired it in `vite.config.ts` via `path.resolve`
 - Installed `class-variance-authority`, `clsx`, `tailwind-merge` as peer deps
 - Created `src/lib/utils.ts` with the `cn()` helper
-- Added `button` component via `shadcn add button`
+- Added `button`, `card`, `input`, `label` components via `shadcn add`
 - Updated `RootPage.tsx` to use `<Button asChild>` wrapping `<Link>` for the nav buttons
+
+---
+
+### 32. Register Page
+
+**Prompt:**
+> "let's create the register page, we will be using react hook form, zod for validation and hook form resolvers with zod"
+
+**What AI did:**
+- Created `src/features/auth/schemas/register.schema.ts` with Zod schema matching backend validation (name min 3, email, password min 8 with letter+number+special char)
+- Added `RegisterRequest` and `AuthResponse` types to `auth.types.ts`
+- Added `register` method to `authService` posting to `/auth/register`
+- Added `REGISTER` and `LOGIN` endpoints to `auth.constants.ts`
+- Built `RegisterPage.tsx` using `Card`, `Input`, `Label`, `Button` from shadcn — no shadcn form component, wired react-hook-form directly with `register()` and inline error messages
+
+**My decisions:**
+- Schemas live in `features/auth/schemas/` — keeps validation logic separate from types
+- Used react-hook-form's `register()` directly instead of the shadcn `Form` wrapper for simplicity
+- `AuthResponse` has no `accessToken` — backend sets cookie, no token in response body needed on the frontend
 
