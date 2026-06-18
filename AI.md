@@ -801,4 +801,5 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Added `logout()` method to `authService` — posts to `/auth/logout`
 - Built `ProfilePage.tsx` — reads `user` from Zustand store, displays name and email, logout button calls `authService.logout()`, clears store, shows `toast.success`, redirects to `/login`
 - Logout button styled with `bg-red-800`
+- Refactored: extracted logout logic into `useLogout.ts` hook and UI into `ProfileCard.tsx` — `ProfilePage.tsx` is now a thin composer following the same hook + dumb component pattern as register/login
 
