@@ -633,3 +633,24 @@ These are the improvements and features that would be added in a production cont
 - Updated `auth.service.ts` to import the mapper from `builders/` and the types from `types/`
 - Updated `auth.store.ts` to import `User` from `auth.types.ts` instead of defining it inline — single source of truth
 
+---
+
+### 29. Router Setup
+
+**Prompt:**
+> "we will use react router dom, each module will have its own pages, let's setup then we start creating the pages for auth flows"
+
+**My decisions:**
+- Each feature owns its routes — `features/auth/auth.routes.tsx` defines auth-specific routes
+- Root `src/router.tsx` composes all feature routes together — keeps the root router clean as features grow
+- `App.tsx` is replaced with just `<RouterProvider router={router} />` — no boilerplate left
+
+**What AI did:**
+- Created `features/auth/auth.routes.tsx` with `/login`, `/register`, `/profile` using `lazy` imports for code splitting
+- Created `src/router.tsx` that spreads `authRoutes` into `createBrowserRouter`
+- Replaced `App.tsx` boilerplate with `RouterProvider`
+- Created stub pages (`LoginPage`, `RegisterPage`, `ProfilePage`) so the app compiles before the real UI is built
+
+**Pattern — lazy loading with React Router v6.4+:**
+React Router's `lazy` prop (data router API) requires the module to export a named `Component` export, not a default export. All page files use `export function Component()` instead of `export default` so code splitting works automatically per route with no extra wiring.
+
