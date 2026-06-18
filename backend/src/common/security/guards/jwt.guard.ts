@@ -23,7 +23,7 @@ export class JwtGuard implements CanActivate {
     }
 
     try {
-      const payload = this.jwtService.verify<{ sub: string; email: string }>(
+      const payload = this.jwtService.verify<{ sub: string; email: string; name: string }>(
         token,
       );
       request.user = payload;

@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 import { ACCESS_TOKEN_COOKIE } from '../cookie.config';
 import { JwtGuard } from './jwt.guard';
 
-const mockPayload = { sub: 'user-id-1', email: 'john@example.com' };
+const mockPayload = { sub: 'user-id-1', email: 'john@example.com', name: 'John Doe' };
 
 const mockJwtService = {
   verify: jest.fn(),
