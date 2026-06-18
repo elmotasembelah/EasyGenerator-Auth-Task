@@ -742,3 +742,18 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Added `<Toaster richColors position="top-center" />` to `providers.tsx`
 - Added `toast.success` / `toast.error` calls in `useRegisterForm.ts` — success navigates to profile, error shows on API failure
 
+---
+
+### 36. Login Page
+
+**Prompt:**
+> "do the same for the login page"
+
+**What AI did:**
+- Created `features/auth/schemas/login.schema.ts` — Zod schema with email and password (min 1)
+- Added `LoginRequest` type to `auth.types.ts`
+- Added `login` method to `authService` posting to `/auth/login`
+- Created `features/auth/hooks/useLoginForm.ts` — same pattern as register, calls `authService.login`, sets user in store, navigates to `/profile`, shows `toast.success` / `toast.error`
+- Created `features/auth/components/LoginForm.tsx` — dumb form component with email + `PasswordInput`, link to `/register`
+- Updated `LoginPage.tsx` to compose hook + form component
+
