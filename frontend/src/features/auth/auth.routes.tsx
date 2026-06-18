@@ -1,16 +1,19 @@
 import { type RouteObject } from "react-router-dom";
+import { AuthGuard } from "@/components/guards/AuthGuard";
+import { ProtectedGuard } from "@/components/guards/ProtectedGuard";
 
 export const authRoutes: RouteObject[] = [
   {
-    path: "/login",
-    lazy: () => import("./pages/LoginPage"),
+    element: <AuthGuard />,
+    children: [
+      { path: "/login", lazy: () => import("./pages/LoginPage") },
+      { path: "/register", lazy: () => import("./pages/RegisterPage") },
+    ],
   },
   {
-    path: "/register",
-    lazy: () => import("./pages/RegisterPage"),
-  },
-  {
-    path: "/profile",
-    lazy: () => import("./pages/ProfilePage"),
+    element: <ProtectedGuard />,
+    children: [
+      { path: "/profile", lazy: () => import("./pages/ProfilePage") },
+    ],
   },
 ];

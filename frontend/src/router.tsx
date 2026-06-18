@@ -1,10 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
+import { RootLayout } from "./components/layouts/RootLayout";
 import { authRoutes } from "./features/auth/auth.routes";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    lazy: () => import("./pages/RootPage"),
+    element: <RootLayout />,
+    HydrateFallback: () => null,
+    children: [
+      {
+        path: "/",
+        lazy: () => import("./pages/RootPage"),
+      },
+      ...authRoutes,
+    ],
   },
-  ...authRoutes,
 ]);

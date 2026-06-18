@@ -757,3 +757,21 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Created `features/auth/components/LoginForm.tsx` — dumb form component with email + `PasswordInput`, link to `/register`
 - Updated `LoginPage.tsx` to compose hook + form component
 
+---
+
+### 37. Route Guards + Auth Hydration
+
+**Prompt:**
+> "let's build route guards — AuthGuard stops logged-in users from going into login/register, ProtectedGuard requires login to view"
+
+**What AI did:**
+- Created `src/components/guards/AuthGuard.tsx` — redirects to `/profile` if already authenticated, renders `<Outlet />` otherwise
+- Created `src/components/guards/ProtectedGuard.tsx` — redirects to `/login` if not authenticated, renders `<Outlet />` otherwise
+- Both guards return `null` while `isUserLoading` is true to avoid flashing the wrong page before auth state is known
+- Guards live inside `auth.routes.tsx` so each feature owns its own route config including guard wrapping — `router.tsx` stays clean and just spreads `authRoutes`
+- Created `src/components/layouts/RootLayout.tsx` — calls `useAuthInit()` so the `/users/me` check fires on every page load and hydrates the auth store before guards evaluate
+- Wrapped all routes under `RootLayout` in `router.tsx` with `HydrateFallback: () => null` to suppress the React Router hydration warning
+
+**My decision:**
+- Guards go inside the feature's route file, not in the root router — keeps route + guard co-located per feature
+
