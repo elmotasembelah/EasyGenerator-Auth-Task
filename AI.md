@@ -702,3 +702,18 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Used react-hook-form's `register()` directly instead of the shadcn `Form` wrapper for simplicity
 - `AuthResponse` has no `accessToken` — backend sets cookie, no token in response body needed on the frontend
 
+---
+
+### 33. Register Page Refactor — Separation of Concerns
+
+**Prompt:**
+> "the main refactor is for the page to be separated to a hook that has the logic of the form and a form comp that is dumb and doesn't know the logic and both will be merged through the page"
+
+**What AI did:**
+- Extracted form logic into `features/auth/hooks/useRegisterForm.ts` — owns `useForm`, `onSubmit`, navigation, and store update
+- Created `features/auth/components/RegisterForm.tsx` — purely presentational, receives `register`, `onSubmit`, `errors`, `isSubmitting` as props
+- `RegisterPage.tsx` is now a thin composer that calls the hook and passes props to the form
+
+**My decision:**
+- This pattern (hook + dumb component + page composer) will be the standard for all auth pages going forward
+
