@@ -789,3 +789,16 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - No service method needed — logout is purely a cookie concern
 - Created `logout.docs.ts` following the same Swagger decorator pattern as login/register
 
+---
+
+### 39. Profile Page
+
+**Prompt:**
+> "let's update the profile page by showing the user info and a logout button"
+
+**What AI did:**
+- Added `LOGOUT` endpoint to `auth.constants.ts`
+- Added `logout()` method to `authService` — posts to `/auth/logout`
+- Built `ProfilePage.tsx` — reads `user` from Zustand store, displays name and email, logout button calls `authService.logout()`, clears store, shows `toast.success`, redirects to `/login`
+- Logout button styled with `bg-red-800`
+

@@ -30,4 +30,8 @@ export const authService = {
     );
     return data;
   },
+
+  logout: async (): Promise<void> => {
+    await apiClient.post(AUTH_ENDPOINTS.LOGOUT);
+  },
 };
