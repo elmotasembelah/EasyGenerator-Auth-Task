@@ -20,6 +20,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({
       sub: user.id,
       email: user.email,
+      name: user.name,
     });
 
     this.logger.log(
@@ -51,6 +52,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({
       sub: user.id,
       email: user.email,
+      name: user.name,
     });
 
     this.logger.log(

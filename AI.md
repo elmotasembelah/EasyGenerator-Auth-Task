@@ -420,4 +420,14 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Removed `JwtGuard` from `AuthModule` providers and exports
 - Updated all import paths accordingly
 
+---
+
+### 18. Store User Object in JWT Payload
+
+**My decision:** Instead of refetching the user from the DB on `GET /me`, store `{ sub, email, name }` in the JWT at sign time and return the decoded payload directly. The token is the source of truth for the current user's identity — no extra DB query needed.
+
+**What AI did:**
+- Added `name` to the JWT sign payload in `AuthService.register` and `AuthService.login`
+- Updated `express.d.ts` to include `name` in `request.user` and made it non-optional since the guard always sets it before protected routes run
+
 _This file will be updated incrementally as each module is completed._
