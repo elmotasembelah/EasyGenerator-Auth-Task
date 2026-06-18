@@ -517,4 +517,15 @@ After both override approaches failed, I decided to configure the throttler itse
 - Functional tests run with `NODE_ENV=test` (throttle skipped)
 - The dedicated rate-limiting `describe` block sets `NODE_ENV=e2e-throttle` before building its app so the real throttler kicks in
 
+---
+
+### 24. Helmet (Security Headers)
+
+**Prompt:**
+> "let's add helmet for extra security and protection"
+
+**What AI did:**
+- Installed `helmet`
+- Added `app.use(helmet())` in `main.ts` before CORS and all other middleware — ensures security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`, etc.) are applied to every response
+
 _This file will be updated incrementally as each module is completed._
