@@ -775,3 +775,17 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 **My decision:**
 - Guards go inside the feature's route file, not in the root router — keeps route + guard co-located per feature
 
+---
+
+### 38. Logout Endpoint (Backend)
+
+**Prompt:**
+> "let's create the logout endpoint in the backend"
+
+**Why:** HttpOnly cookies can't be cleared from the client — the backend must call `res.clearCookie()`.
+
+**What AI did:**
+- Added `POST /auth/logout` to `AuthController` — protected by `JwtGuard`, calls `res.clearCookie(ACCESS_TOKEN_COOKIE)`, returns 204
+- No service method needed — logout is purely a cookie concern
+- Created `logout.docs.ts` following the same Swagger decorator pattern as login/register
+

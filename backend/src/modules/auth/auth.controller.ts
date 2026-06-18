@@ -5,7 +5,9 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtGuard } from '../../common/security/guards/jwt.guard';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
@@ -18,6 +20,7 @@ import { AUTH_THROTTLER } from './auth.constants';
 import { THROTTLER_DEFAULTS } from '../../common/throttler/throttler.config';
 import { AuthService } from './auth.service';
 import { LoginDocs } from './docs/login.docs';
+import { LogoutDocs } from './docs/logout.docs';
 import { RegisterDocs } from './docs/register.docs';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -75,5 +78,13 @@ export class AuthController {
       cookieConfig(this.isProd),
     );
     return this.isProd ? { user: result.user } : result;
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtGuard)
+  @LogoutDocs()
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(ACCESS_TOKEN_COOKIE, cookieConfig(this.isProd));
   }
 }
