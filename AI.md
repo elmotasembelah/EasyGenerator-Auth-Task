@@ -569,3 +569,16 @@ These are the improvements and features that would be added in a production cont
 - Scaffolded `frontend/` using `pnpm create vite@latest frontend -- --template react-ts`
 - Stack: React 19, TypeScript, Vite
 
+---
+
+### 26. Axios API Client
+
+**Prompt:**
+> "we will create lib/api/api.client.ts and setup our axios instance in that file"
+
+**What AI did:**
+- Created `src/lib/api/api.client.ts` with an axios instance pointing to `VITE_API_URL`
+- Set `withCredentials: true` globally so every request sends the `access_token` cookie automatically — no per-request config needed
+
+**Note:** A 401 response interceptor was discussed and drafted but deferred — it will be added when the auth feature is wired up, not during initial setup.
+
