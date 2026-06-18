@@ -730,3 +730,15 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Toggle button uses `variant="ghost"` positioned absolutely inside a relative wrapper, `tabIndex={-1}` so it doesn't interrupt form tab flow
 - Replaced the plain `Input` in `RegisterForm.tsx` with `PasswordInput`
 
+---
+
+### 35. Sonner Toast Notifications
+
+**Prompt:**
+> "let's setup sonner for feedback for the user"
+
+**What AI did:**
+- I installed `sonner`
+- Added `<Toaster richColors position="top-center" />` to `providers.tsx`
+- Added `toast.success` / `toast.error` calls in `useRegisterForm.ts` — success navigates to profile, error shows on API failure
+

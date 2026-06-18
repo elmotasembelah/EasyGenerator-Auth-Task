@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 import {
@@ -18,9 +19,14 @@ export function useRegisterForm() {
   });
 
   const onSubmit = async (values: RegisterFormValues) => {
-    const { user } = await authService.register(values);
-    setUser(user);
-    navigate("/profile");
+    try {
+      const { user } = await authService.register(values);
+      setUser(user);
+      toast.success("Account created successfully!");
+      navigate("/profile");
+    } catch {
+      toast.error("Registration failed. Please try again.");
+    }
   };
 
   return {
