@@ -448,4 +448,16 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Throws when `user` is not set on the request
 - Used `.overrideGuard(JwtGuard)` in the test module to avoid resolving `JwtService` in unit tests
 
+---
+
+### 20. CORS Configuration
+
+**Prompt:**
+> "let's start working on cors. i will setup FRONTEND_URL in env and we will read it and use it. we will have a cors folder in the common folder that will house the config for cors"
+
+**What AI did:**
+- Added `FRONTEND_URL=` to `.env.example`
+- Created `src/common/cors/cors.config.ts` with `corsConfig(config: ConfigService): CorsOptions` — reads `FRONTEND_URL` via `getOrThrow` and sets `credentials: true` so the browser sends cookies cross-origin
+- Wired `app.enableCors(corsConfig(app.get(ConfigService)))` in `main.ts` — same factory pattern as `jwtConfig` and `pinoConfig`
+
 _This file will be updated incrementally as each module is completed._
