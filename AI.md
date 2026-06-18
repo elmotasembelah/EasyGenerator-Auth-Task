@@ -803,3 +803,15 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Logout button styled with `bg-red-800`
 - Refactored: extracted logout logic into `useLogout.ts` hook and UI into `ProfileCard.tsx` — `ProfilePage.tsx` is now a thin composer following the same hook + dumb component pattern as register/login
 
+---
+
+### 40. Root Page Auth-Aware UI
+
+**Prompt:**
+> "in the root page let's check if user is authenticated, say hello {name}, and route to profile instead of auth pages"
+
+**What AI did:**
+- `RootPage.tsx` reads `isAuthenticated` and `user` from Zustand store
+- When authenticated: shows "Hello, {name}" and a single "Go to Profile" button
+- When not authenticated: shows original "Welcome" heading with Login + Register buttons
+
