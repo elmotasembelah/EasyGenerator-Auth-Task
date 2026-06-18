@@ -839,3 +839,14 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Updated `ProfileCard` to accept `isLoggingOut` prop — disables button and shows "Logging out..." while in progress
 - Updated `ProfilePage` to destructure `{ logout, isLoggingOut }` from the hook and pass both to `ProfileCard`
 
+---
+
+### 43. Destructive Button Styling
+
+**Prompt:**
+> "change the style of the variant not the button itself"
+
+**What AI did:**
+- Changed destructive variant in `button.tsx` from the Nova tinted style (`bg-destructive/10`) to solid (`bg-destructive text-white hover:bg-destructive/90`)
+- Updated `--destructive` CSS variable in `index.css` to `oklch(0.442 0.191 27)` (red-600) for a solid, readable red
+

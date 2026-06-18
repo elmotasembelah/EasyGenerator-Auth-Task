@@ -32,7 +32,8 @@ export function ProfileCard({ user, onLogout, isLoggingOut }: ProfileCardProps) 
             </div>
           </div>
           <Button
-            className="w-full bg-red-800 hover:bg-red-900 text-white"
+            variant="destructive"
+            className="w-full"
             onClick={onLogout}
             disabled={isLoggingOut}
           >
