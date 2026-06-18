@@ -717,3 +717,16 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 **My decision:**
 - This pattern (hook + dumb component + page composer) will be the standard for all auth pages going forward
 
+---
+
+### 34. PasswordInput Component
+
+**Prompt:**
+> "setup the password input comp — should have a state to show and hide the password, the toggle will be a button using a lucide icon"
+
+**What AI did:**
+- Created `features/auth/components/PasswordInput.tsx` — wraps shadcn `Input` with a toggle button using `Eye` / `EyeOff` from lucide-react
+- Internal `show` state controls `type="text"` vs `type="password"`
+- Toggle button uses `variant="ghost"` positioned absolutely inside a relative wrapper, `tabIndex={-1}` so it doesn't interrupt form tab flow
+- Replaced the plain `Input` in `RegisterForm.tsx` with `PasswordInput`
+
