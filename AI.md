@@ -460,4 +460,19 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Created `src/common/cors/cors.config.ts` with `corsConfig(config: ConfigService): CorsOptions` — reads `FRONTEND_URL` via `getOrThrow` and sets `credentials: true` so the browser sends cookies cross-origin
 - Wired `app.enableCors(corsConfig(app.get(ConfigService)))` in `main.ts` — same factory pattern as `jwtConfig` and `pinoConfig`
 
+---
+
+### 21. Rate Limiting (Throttler)
+
+**Prompt:**
+> "let's work on the throttler. general ttl should be 1 min, and 10 req. then the public auth endpoints like login and register will have their own limits. ttl is the same. register 3 req, login 5 req"
+
+**What AI did:**
+- Installed `@nestjs/throttler`
+- Created `src/common/throttler/throttler.config.ts` with `THROTTLER_DEFAULTS` (TTL: 60s, limit: 10) and `throttlerConfig()` factory
+- Registered `ThrottlerModule` globally in `AppModule` with `ThrottlerGuard` as `APP_GUARD`
+- Applied `@Throttle` directly on the `register` and `login` controller methods
+
+**My correction:** AI initially put the auth-specific limits (`REGISTER_LIMIT`, `LOGIN_LIMIT`) inside the global `throttler.config.ts`. I directed moving them to `auth.constants.ts` — they are module-specific concerns and don't belong in the shared infra config.
+
 _This file will be updated incrementally as each module is completed._
