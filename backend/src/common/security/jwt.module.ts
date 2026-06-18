@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule as NestJwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './jwt.config';
+import { JwtGuard } from './guards/jwt.guard';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { jwtConfig } from './jwt.config';
       useFactory: jwtConfig,
     }),
   ],
-  exports: [NestJwtModule],
+  providers: [JwtGuard],
+  exports: [NestJwtModule, JwtGuard],
 })
 export class JwtModule {}

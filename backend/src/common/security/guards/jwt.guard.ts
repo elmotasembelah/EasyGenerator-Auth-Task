@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { ACCESS_TOKEN_COOKIE } from '../../../common/security/cookie.config';
+import { ACCESS_TOKEN_COOKIE } from '../cookie.config';
 
 @Injectable()
 export class JwtGuard implements CanActivate {

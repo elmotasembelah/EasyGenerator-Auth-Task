@@ -408,4 +408,16 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 - Updated `JwtGuard` to use `request.user = payload` instead of the untyped `request['user'] = payload`
 - No `tsconfig.json` changes needed — TypeScript picks up `.d.ts` files under `src` automatically
 
+---
+
+### 17. Move JwtGuard to Common Security
+
+**My decision:** Proactively moved `JwtGuard` from `src/modules/auth/guards/` to `src/common/security/guards/` before building the users controller — anticipating that importing `AuthModule` into `UsersModule` (to access the guard) would create a circular dependency since `AuthModule` already imports `UsersModule`.
+
+**What AI did:**
+- Moved `jwt.guard.ts` and `jwt.guard.spec.ts` to `src/common/security/guards/`
+- Added `JwtGuard` as a provider and export in `JwtModule` so any module importing `JwtModule` gets the guard
+- Removed `JwtGuard` from `AuthModule` providers and exports
+- Updated all import paths accordingly
+
 _This file will be updated incrementally as each module is completed._

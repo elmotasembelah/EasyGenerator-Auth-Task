@@ -1,7 +1,7 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { ACCESS_TOKEN_COOKIE } from '../../../common/security/cookie.config';
+import { ACCESS_TOKEN_COOKIE } from '../cookie.config';
 import { JwtGuard } from './jwt.guard';
 
 const mockPayload = { sub: 'user-id-1', email: 'john@example.com' };
