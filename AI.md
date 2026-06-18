@@ -582,3 +582,54 @@ These are the improvements and features that would be added in a production cont
 
 **Note:** A 401 response interceptor was discussed and drafted but deferred — it will be added when the auth feature is wired up, not during initial setup.
 
+---
+
+### 27. Auth Store, React Query Setup & Auth Init Hook
+
+**Prompt:**
+> "before we start with the store, we are going to work feature based, and the auth store is part of the auth feature, so we will create a features/auth/store/auth.store.ts file"
+
+**My decisions:**
+- Feature-based architecture — all auth concerns live under `features/auth/`, not scattered across global folders
+- Each concern gets its own subfolder:
+  - `store/` — Zustand state
+  - `hooks/` — React Query hooks
+  - `services/` — API call logic
+  - `constants/` — endpoint paths and query keys
+  - `types/` — TypeScript interfaces
+  - `builders/` — response-to-model mappers
+  - `components/` — feature-scoped UI components
+- Auth store lives under `features/auth/store/` — not a global store — because it is feature-specific state
+- Store shape: `user`, `isAuthenticated`, `isUserLoading` — with `setUser` and `clearUser` as the only actions
+- `isUserLoading` starts as `true` and is flipped to `false` inside `setUser` and `clearUser` directly — no separate `setIsUserLoading` action needed since loading is always resolved by one of those two paths
+
+**Prompt:**
+> "the hook will be called useAuthInit and it will use react query. the call to the endpoint will be done with a service layer that will own the call. and we will have an auth.constants that will house the endpoints key and query keys"
+
+**What AI did:**
+- Created `features/auth/constants/auth.constants.ts` — `AUTH_ENDPOINTS` and `AUTH_QUERY_KEYS`
+- Created `features/auth/services/auth.service.ts` — `getMe()` using `apiClient`
+- Created `features/auth/hooks/useAuthInit.ts` — `useQuery` with `retry: false` (avoids 3-retry delay on unauthenticated users), syncs store via `setUser` / `clearUser` on settle
+
+**Prompt:**
+> "we will need to setup the provider for react query — separate providers file"
+
+**My decision:** Provider lives in `src/providers.tsx` (not inline in `main.tsx`) to keep `main.tsx` clean and make it easy to add future providers (e.g. theme, toast) in one place.
+
+---
+
+### 28. Auth Types & Response Mapping
+
+**Prompt:**
+> "let's add a builder/dto file for the response of the user so the system won't be coupled with the user object shape"
+
+**My decisions:**
+- Types live in `features/auth/types/auth.types.ts` — keeping them scoped to the feature
+- Mapper function belongs in a dedicated `features/auth/builders/auth.builders.ts` — not in the types file, since it's logic not a type definition
+
+**What AI did:**
+- Created `auth.types.ts` with `User` (internal app shape) and `MeResponse` (API response shape) interfaces
+- Created `auth.builders.ts` with `meResponseToUser` mapper — decouples the app from the API shape, ready to handle divergence without touching the rest of the codebase
+- Updated `auth.service.ts` to import the mapper from `builders/` and the types from `types/`
+- Updated `auth.store.ts` to import `User` from `auth.types.ts` instead of defining it inline — single source of truth
+
