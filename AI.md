@@ -475,4 +475,15 @@ AI clarified that `ConfigModule.isGlobal` is a built-in option on NestJS's `Conf
 
 **My correction:** AI initially put the auth-specific limits (`REGISTER_LIMIT`, `LOGIN_LIMIT`) inside the global `throttler.config.ts`. I directed moving them to `auth.constants.ts` — they are module-specific concerns and don't belong in the shared infra config.
 
+---
+
+### 22. Fix AppController spec after AppService gained ConfigService dependency
+
+**What happened:**
+`AppService` was updated to inject `ConfigService` (to expose `NODE_ENV` in `getHello()`), but the generated `app.controller.spec.ts` was never updated. Running tests failed with: `Nest can't resolve dependencies of the AppService (?). ConfigService is not available in RootTestModule`.
+
+**Fix:**
+- Added a `ConfigService` mock to the test module providers: `{ provide: ConfigService, useValue: { get: jest.fn().mockReturnValue('test') } }`
+- Updated the assertion from `'Hello World!'` to `'Hello World! NODE_ENV=test'` to match the actual return value
+
 _This file will be updated incrementally as each module is completed._
