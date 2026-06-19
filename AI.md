@@ -878,3 +878,11 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 **Fix:** Removed `baseUrl: "."` from `tsconfig.app.json` — TypeScript 6 can resolve `paths` entries with explicit relative prefixes (`./src/*`) without needing `baseUrl` as a root anchor.
 
 **My decision:** Fix the deprecation properly rather than silencing it with `ignoreDeprecations`.
+
+---
+
+### 46. Fix react-refresh/only-export-components Lint Error
+
+**Problem:** CI lint step failed — `button.tsx` exported both `Button` (a component) and `buttonVariants` (a CVA config object), violating the `react-refresh/only-export-components` rule. React Fast Refresh requires files to export only components so it can reliably know what to re-render on changes.
+
+**Fix:** Removed `buttonVariants` from the export. It's still defined and used internally by `Button` — it just doesn't need to be part of the public API since nothing outside the file imports it.
