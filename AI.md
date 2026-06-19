@@ -869,3 +869,12 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Frontend job runs lint + build (no unit tests yet — Vitest setup is a future task)
 - No `mongodb-start` service step needed — e2e tests spin up `mongodb-memory-server` in-process
 
+---
+
+### 45. Fix TypeScript baseUrl Deprecation
+
+**Problem:** `pnpm build` failed with `TS5101: Option 'baseUrl' is deprecated and will stop functioning in TypeScript 7.0`.
+
+**Fix:** Removed `baseUrl: "."` from `tsconfig.app.json` — TypeScript 6 can resolve `paths` entries with explicit relative prefixes (`./src/*`) without needing `baseUrl` as a root anchor.
+
+**My decision:** Fix the deprecation properly rather than silencing it with `ignoreDeprecations`.
