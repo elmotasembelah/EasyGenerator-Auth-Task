@@ -850,3 +850,22 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 - Changed destructive variant in `button.tsx` from the Nova tinted style (`bg-destructive/10`) to solid (`bg-destructive text-white hover:bg-destructive/90`)
 - Updated `--destructive` CSS variable in `index.css` to `oklch(0.442 0.191 27)` (red-600) for a solid, readable red
 
+---
+
+### 44. GitHub Actions CI
+
+**Prompt:**
+> "let's add the github ci"
+
+**What AI did:**
+- Created `.github/workflows/ci.yml` with two jobs triggered on push to `main`/`dev` and on PRs to `main`:
+  - **Backend** — installs with `pnpm --frozen-lockfile`, runs `pnpm test` (unit) and `pnpm test:e2e` with `NODE_ENV=test` and the required env vars (`JWT_SECRET`, `JWT_EXPIRES_IN`, `MONGODB_URI` pointing to an in-process `mongodb-memory-server`)
+  - **Frontend** — installs, runs `pnpm lint`, then `pnpm build` with `VITE_API_URL` set
+
+**My decisions:**
+- `pnpm/action-setup@v4` with `version: 10` to match the local toolchain
+- Node 22 on `ubuntu-latest` for both jobs
+- `cache-dependency-path` scoped to each workspace (`backend/pnpm-lock.yaml` / `frontend/pnpm-lock.yaml`) so cache misses only invalidate the changed workspace
+- Frontend job runs lint + build (no unit tests yet — Vitest setup is a future task)
+- No `mongodb-start` service step needed — e2e tests spin up `mongodb-memory-server` in-process
+
