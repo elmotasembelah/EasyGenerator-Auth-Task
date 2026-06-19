@@ -199,6 +199,50 @@ describe('Auth (e2e)', () => {
     });
   });
 
+  describe('POST /api/v1/auth/logout', () => {
+    let cookie: string;
+
+    beforeAll(async () => {
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: USER.email, password: USER.password });
+
+      cookie = (res.headers['set-cookie'] as unknown as string[])[0];
+    });
+
+    it('should return 204 when authenticated', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Cookie', cookie)
+        .expect(204);
+    });
+
+    it('should clear the access_token cookie', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Cookie', cookie);
+
+      const cookies = res.headers['set-cookie'] as unknown as string[];
+      const accessTokenCookie = cookies?.find((c) =>
+        c.startsWith(ACCESS_TOKEN_COOKIE),
+      );
+      expect(accessTokenCookie).toMatch(/Max-Age=0|Expires=.*1970/);
+    });
+
+    it('should return 401 when no cookie is provided', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .expect(401);
+    });
+
+    it('should return 401 with an invalid cookie', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/logout')
+        .set('Cookie', `${ACCESS_TOKEN_COOKIE}=tampered.jwt.token`)
+        .expect(401);
+    });
+  });
+
   describe('GET /api/v1/users/me', () => {
     let cookie: string;
 

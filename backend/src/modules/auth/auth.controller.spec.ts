@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Response } from 'express';
+import { JwtGuard } from '../../common/security/guards/jwt.guard';
 import { ACCESS_TOKEN_COOKIE } from '../../common/security/cookie.config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -17,6 +18,7 @@ const mockAuthService = {
 
 const mockRes = {
   cookie: jest.fn(),
+  clearCookie: jest.fn(),
 } as unknown as Response;
 
 async function buildController(nodeEnv: string) {
@@ -29,7 +31,10 @@ async function buildController(nodeEnv: string) {
         useValue: { get: jest.fn().mockReturnValue(nodeEnv) },
       },
     ],
-  }).compile();
+  })
+    .overrideGuard(JwtGuard)
+    .useValue({ canActivate: () => true })
+    .compile();
   return module.get<AuthController>(AuthController);
 }
 
@@ -101,6 +106,38 @@ describe('AuthController', () => {
         mockRes,
       );
       expect(result).not.toHaveProperty('accessToken');
+    });
+  });
+
+  describe('logout', () => {
+    it('should clear the access_token cookie', async () => {
+      const controller = await buildController('development');
+      controller.logout(mockRes);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(mockRes.clearCookie).toHaveBeenCalledWith(
+        ACCESS_TOKEN_COOKIE,
+        expect.objectContaining({ httpOnly: true }),
+      );
+    });
+
+    it('should clear the cookie with secure: false in dev', async () => {
+      const controller = await buildController('development');
+      controller.logout(mockRes);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(mockRes.clearCookie).toHaveBeenCalledWith(
+        ACCESS_TOKEN_COOKIE,
+        expect.objectContaining({ secure: false }),
+      );
+    });
+
+    it('should clear the cookie with secure: true in prod', async () => {
+      const controller = await buildController('production');
+      controller.logout(mockRes);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(mockRes.clearCookie).toHaveBeenCalledWith(
+        ACCESS_TOKEN_COOKIE,
+        expect.objectContaining({ secure: true }),
+      );
     });
   });
 });
