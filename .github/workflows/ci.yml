@@ -43,6 +43,10 @@ jobs:
           JWT_EXPIRES_IN: 1h
           MONGODB_URI: mongodb://localhost:27017/test
 
+      - name: Build
+        working-directory: backend
+        run: pnpm build
+
   frontend:
     name: Frontend Build
     runs-on: ubuntu-latest
