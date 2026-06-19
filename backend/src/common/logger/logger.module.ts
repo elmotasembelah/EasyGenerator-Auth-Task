@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
-import { pinoConfig } from './pino.config';
+import { pinoConfig } from './logger.config';
 
+@Global()
 @Module({
   imports: [
     PinoLoggerModule.forRootAsync({

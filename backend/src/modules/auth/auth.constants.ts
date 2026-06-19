@@ -1,0 +1,4 @@
+export const AUTH_THROTTLER = {
+  REGISTER_LIMIT: 3,
+  LOGIN_LIMIT: 5,
+};
