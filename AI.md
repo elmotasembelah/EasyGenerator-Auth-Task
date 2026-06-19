@@ -886,3 +886,14 @@ React Router's `lazy` prop (data router API) requires the module to export a nam
 **Problem:** CI lint step failed — `button.tsx` exported both `Button` (a component) and `buttonVariants` (a CVA config object), violating the `react-refresh/only-export-components` rule. React Fast Refresh requires files to export only components so it can reliably know what to re-render on changes.
 
 **Fix:** Removed `buttonVariants` from the export. It's still defined and used internally by `Button` — it just doesn't need to be part of the public API since nothing outside the file imports it.
+
+---
+
+### 47. Add Backend Build Step to CI
+
+**Prompt:**
+> "are we testing the backend build in the ci?"
+
+**Why:** `ts-jest` transpiles on the fly without full type checking, so tests passing doesn't guarantee the compiled output is valid. Adding `pnpm build` after the tests catches TypeScript errors that only surface at compile time.
+
+**What AI did:** Added a `Build` step to the backend CI job running `pnpm build` after the e2e tests.
